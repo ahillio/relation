@@ -1,0 +1,26 @@
+diff --git a/relation_endpoint.install b/relation_endpoint.install
+index e4a553b..cb3297a 100644
+--- a/relation_endpoint.install
++++ b/relation_endpoint.install
+@@ -48,9 +48,17 @@ function relation_endpoint_field_schema() {
+ function relation_endpoint_update_7001() {
+   // Same index operations are performed to data and revision tables
+   foreach (array('field_data_endpoints', 'field_revision_endpoints') as $table) {
+-    db_drop_index($table, 'endpoints_relation');
+-    db_add_index($table, 'endpoints_entity_type', array('endpoints_entity_type'));
+-    db_add_index($table, 'endpoints_entity_id', array('endpoints_entity_id'));
+-    db_add_index($table, 'endpoints_r_index', array('endpoints_r_index'));
++    if (db_index_exists($table, 'endpoints_relation')) {
++      db_drop_index($table, 'endpoints_relation');
++    }
++    if (!db_index_exists($table, 'endpoints_entity_type')) {
++      db_add_index($table, 'endpoints_entity_type', array('endpoints_entity_type'));
++    }
++    if (!db_index_exists($table, 'endpoints_entity_id')) {
++      db_add_index($table, 'endpoints_entity_id', array('endpoints_entity_id'));
++    }
++    if (!db_index_exists($table, 'endpoints_r_index')) {
++      db_add_index($table, 'endpoints_r_index', array('endpoints_r_index'));
++    }
+   }
+ }
